@@ -1,0 +1,56 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Dashboard · Smart Task Manager{% endblock %}
+
+{% block content %}
+<h2>Welcome, {{ user.username }}!</h2>
+
+<section class="panel">
+  <form method="get" class="controls">
+    <div class="row">
+      <div class="field">
+        <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search by title or description" />
+      </div>
+      <div class="field">
+        <select name="sort">
+          <option value="due" {% if request.GET.sort == 'due' or not request.GET.sort %}selected{% endif %}>Sort by Due Date</option>
+          <option value="priority" {% if request.GET.sort == 'priority' %}selected{% endif %}>Sort by Priority</option>
+          <option value="title" {% if request.GET.sort == 'title' %}selected{% endif %}>Sort by Title</option>
+          <option value="status" {% if request.GET.sort == 'status' %}selected{% endif %}>Sort by Status</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <select name="status">
+          <option value="" {% if not request.GET.status %}selected{% endif %}>All</option>
+          <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pending</option>
+          <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>Completed</option>
+        </select>
+      </div>
+      <div class="field">
+        <button type="submit" class="btn primary">Apply</button>
+        <a class="btn" href="{% url 'dashboard' %}">Reset</a>
+      </div>
+    </div>
+  </form>
+
+  <h3>Your Tasks</h3>
+  <ul id="task-list">
+    {% for task in tasks %}
+      <li data-task-id="{{ task.id }}" data-title="{{ task.title|lower }}" data-desc="{{ task.description|lower }}" data-status="{% if task.completed %}completed{% else %}pending{% endif %}">
+        <strong class="task-title">{{ task.title }}</strong>
+        {% if task.priority %} — <span class="task-priority">{{ task.priority }}</span>{% endif %}
+        {% if task.due_date %} — Due: <span class="task-due">{{ task.due_date|date:"Y-m-d" }}</span>{% endif %}
+        <span class="task-status">{% if task.completed %} — ✅ Completed{% else %} — ⏳ Pending{% endif %}</span>
+        | <a href="{% url 'edit_task' task.id %}">✏️ Edit</a>
+        | <a href="{% url 'toggle_task' task.id %}" class="toggle-task" data-api-url="{% url 'toggle_task_api' task.id %}">{% if task.completed %}Mark Incomplete{% else %}Mark Complete{% endif %}</a>
+        | <a href="{% url 'delete_task' task.id %}">🗑️ Delete</a>
+      </li>
+    {% empty %}
+      <li>No tasks yet. <a href="{% url 'create_task' %}">Create your first task</a>.</li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}
+

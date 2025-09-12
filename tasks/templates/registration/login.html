@@ -1,0 +1,28 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Login · Smart Task Manager{% endblock %}
+
+{% block content %}
+<h2>Login</h2>
+<form method="post">
+  {% csrf_token %}
+  {% if form %}{{ form.as_p }}{% else %}
+    <label>Username:</label><br>
+    <input type="text" name="username" required><br>
+    <label>Password:</label><br>
+    <input type="password" name="password" required><br>
+  {% endif %}
+  <button type="submit">Login</button>
+</form>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+

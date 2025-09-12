@@ -1,0 +1,13 @@
+{% extends 'tasks/base.html' %}
+
+{% block content %}
+<section>
+    <h1>Welcome to Smart Task Manager</h1>
+    <p>Manage your tasks efficiently and stay productive!</p>
+    {% if not user.is_authenticated %}
+        <a href="{% url 'register' %}">Get Started</a>
+    {% else %}
+        <a href="{% url 'dashboard' %}">Go to Dashboard</a>
+    {% endif %}
+</section>
+{% endblock %}
